@@ -16,21 +16,26 @@ This project is built with a strong foundation using **Flutter Clean Architectur
   - Easily create, edit, delete, and view your notes from anywhere.
 - 🧱 **Clean Architecture**
   - Designed with separation of concerns in mind:
-    - `core`: Common utilities and models
-    - `features`: Domain, data, and presentation layers
-    - `shared`: Reusable components
+    - `core`: Common utilities and models.
+    - `features`: Domain, data, and presentation layers.
+    - `shared`: Reusable components.
 - 📱 **Responsive UI**
   - Clean and user-friendly interface optimized for multiple screen sizes.
+- 🧑‍💻 **State Management (BLoC)**
+  - Application state is managed using **BLoC**, ensuring better separation of concerns.
+- 🗂 **Local Storage (Hive)**
+  - Hive is used to persist notes locally for offline support, with automatic sync to Firebase when online.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Flutter** – UI toolkit for building natively compiled apps
-- **Firebase Authentication** – Secure and easy sign-in methods
-- **Cloud Firestore** – NoSQL cloud database for storing and syncing data
-- **Provider** – State management
-- **Flutter Clean Architecture** – For modular, testable, and maintainable code
+- **Flutter** – UI toolkit for building natively compiled apps.
+- **Firebase Authentication** – Secure and easy sign-in methods.
+- **Cloud Firestore** – NoSQL cloud database for storing and syncing data.
+- **BLoC** – For managing state and handling complex logic.
+- **Hive** – Local storage solution for offline support.
+- **Flutter Clean Architecture** – For modular, testable, and maintainable code.
 
 ---
 
@@ -79,4 +84,3 @@ To run this app locally:
 ```bash
 git clone https://github.com/your-username/notes_app.git
 cd notes_app
-

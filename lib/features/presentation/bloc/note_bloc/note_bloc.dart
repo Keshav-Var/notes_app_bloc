@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/features/bussiness/entities/note_entity.dart';
@@ -29,23 +28,40 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     on<AddNoteEvent>(_onAddNote);
     on<UpdateNoteEvent>(_onUpdateNote);
     on<DeleteNoteEvent>(_onDeleteNote);
+     on<_InternalNoteStreamUpdated>(_onNoteStreamUpdated);
   }
 
+void _onNoteStreamUpdated(
+  _InternalNoteStreamUpdated event,
+  Emitter<NoteState> emit,
+) {
+  emit(NoteLoaded(event.notes));
+}
+
+
   Future<void> _onLoadNotes(LoadNotes event, Emitter<NoteState> emit) async {
-    emit(NoteLoading());
-    await _notesSubscription?.cancel();
-    try {
-      final stream = getNotesUsecase(event.uid);
-      _notesSubscription = stream.listen(
-        (notes) => add(_InternalNoteStreamUpdated(notes)),
-        onError: (e) => emit(const NoteError('Failed to load notes.')),
-      );
-    } on SocketException {
-      emit(const NoteError('No internet connection.'));
-    } catch (e) {
-      emit(const NoteError('An error occurred while fetching notes.'));
-    }
+  emit(NoteLoading());
+  
+
+  await _notesSubscription?.cancel();
+  try {
+    final stream = getNotesUsecase(event.uid);
+    _notesSubscription = stream.listen(
+      (notes) {
+        
+        add(_InternalNoteStreamUpdated(notes));
+      },
+      onError: (e) {
+        
+        emit(const NoteError('Failed to load notes.'));
+      },
+    );
+  } catch (e) {
+    
+    emit(const NoteError('An error occurred while fetching notes.'));
   }
+}
+
 
   Future<void> _onAddNote(AddNoteEvent event, Emitter<NoteState> emit) async {
     try {
@@ -79,6 +95,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     return super.close();
   }
 }
+
 
 // 🔒 Private internal event to handle stream updates
 class _InternalNoteStreamUpdated extends NoteEvent {

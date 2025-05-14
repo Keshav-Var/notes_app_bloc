@@ -21,27 +21,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    final authState = context.read<AppAuthBloc>().state;
-    if (authState is Authenticated) {
-      context.read<NoteBloc>().add(LoadNotes(authState.uid));
-    }
+
+@override
+void initState() {
+  super.initState();
+  final authState = context.read<AppAuthBloc>().state;
+  if (authState is Authenticated) {
+    context.read<NoteBloc>().add(LoadNotes(authState.uid));
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppAuthBloc, AppAuthState>(
+
       builder: (context, authState) {
         if (authState is! Authenticated) {
           return const Scaffold(
             body: Center(child: Text('User not authenticated')),
           );
         }
-
+        context.read<NoteBloc>().add(LoadNotes(authState.uid));
         final uid = authState.uid;
-
+    
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.deepOrange,
@@ -81,22 +84,25 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           body: BlocBuilder<NoteBloc, NoteState>(
-            builder: (context, noteState) {
-              if (noteState is NoteLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (noteState is NoteError) {
-                return Center(child: Text('Error: ${noteState.message}'));
-              } else if (noteState is NoteLoaded) {
-                final notes = noteState.notes;
-                if (notes.isEmpty) {
-                  return const NoEntityWidget();
-                }
-                return _bodyWidget(context, notes);
-              } else {
-                return const Center(child: Text('Unexpected state'));
-              }
-            },
-          ),
+      builder: (context, noteState) {
+        if (noteState is NoteInitial) {
+    return const Center(child: CircularProgressIndicator());
+        } else if (noteState is NoteLoading) {
+    return const Center(child: CircularProgressIndicator());
+        } else if (noteState is NoteError) {
+    return Center(child: Text('Error: ${noteState.message}'));
+        } else if (noteState is NoteLoaded) {
+    final notes = noteState.notes;
+    if (notes.isEmpty) {
+      return const NoEntityWidget();
+    }
+    return _bodyWidget(context, notes);
+        } else {
+    return const Center(child: Text('Unexpected state'));
+        }
+      },
+    )
+    
         );
       },
     );
@@ -150,7 +156,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    DateFormat("dd MMM yyyy hh:mm a").format(note.time!.toDate()),
+                    DateFormat("dd MMM yyyy hh:mm a")
+                        .format(note.time!.toDate()),
                     style: const TextStyle(fontSize: 10),
                   )
                 ],
